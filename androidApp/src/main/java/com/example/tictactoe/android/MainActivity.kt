@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// git
 
 fun wincondition(i: Int, i1: Int, i2: Int) {
     if (list[i] != "") {
