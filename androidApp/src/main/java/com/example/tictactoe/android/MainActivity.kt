@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.ConnectivityManagerCompat.RestrictBackgroundStatus
 import com.example.tictactoe.Greeting
 import org.w3c.dom.Text
 import sky
@@ -43,40 +44,57 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            DefaultPreview()
+            tictactoe()
         }
     }
 }
 
-// git
-
 fun wincondition(i: Int, i1: Int, i2: Int) {
     if (list[i] != "") {
-        if (list[i] == list[i1] && list[i] == list[i2])
-        {
-            star.value = "win"
+        if (list[i] == "X" && list[i1] == "X" && list[i2] == "X") {
+            if (list[i] == list[i1] && list[i] == list[i2]) {
+                star.value = "X is win!..."
+            }
+        }
+
+        if (list[i] == "0" && list[i1] == "0" && list[i2] == "0") {
+            if (list[i] == list[i1] && list[i] == list[i2]) {
+                star.value = "0 is win!..."
+            }
+        }
+
+        if (star.value != "X is win!..." && star.value != "0 is win!..." && list[0] != "" && list[1] != "" && list[2] != "" && list[3] != "" && list[4] != "" && list[5] != "" && list[6] != "" && list[7] != "" && list[8] != "") {
+            star.value = " it's tie!..."
         }
     }
 }
 
 @Composable
-fun button(text: String)
-{
-    Button(onClick = { Log.d("==>" , "Button : ")
-        if(text == "Restart")
-        {
-            list.clear()
-        }
-    },
+fun button(text: String) {
+    Button(
+        onClick = {
+            Log.d("==>", "Button : ")
+            if (text == "Restart") {
+                list[0] = ""
+                list[1] = ""
+                list[2] = ""
+                list[3] = ""
+                list[4] = ""
+                list[5] = ""
+                list[6] = ""
+                list[7] = ""
+                list[8] = ""
+
+                star.value = ""
+            }
+        },
         enabled = true,
         colors = ButtonDefaults.buttonColors(Color.White),
-        shape = RoundedCornerShape(50)
-    )
-    {
-        Text(text = text,
-            fontSize = 20.sp,
-            fontStyle = FontStyle.Italic,
-            color = Color.Black
+        shape = RoundedCornerShape(50),
+        border = BorderStroke(3.dp, sky.pink)
+    ) {
+        Text(
+            text = text, fontSize = 30.sp, fontStyle = FontStyle.Italic, color = Color.Black
         )
     }
 }
@@ -91,7 +109,7 @@ var temp = 1
 var star = mutableStateOf("")
 
 @Composable
-fun surface(rowScope: RowScope, i: Int) {
+fun square(rowScope: RowScope, i: Int) {
     rowScope.apply {
         Box(contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -109,7 +127,6 @@ fun surface(rowScope: RowScope, i: Int) {
                         }
                     }
 
-
                     wincondition(i = 0, i1 = 1, i2 = 2)
                     wincondition(i = 3, i1 = 4, i2 = 5)
                     wincondition(i = 6, i1 = 7, i2 = 8)
@@ -118,7 +135,6 @@ fun surface(rowScope: RowScope, i: Int) {
                     wincondition(i = 2, i1 = 5, i2 = 8)
                     wincondition(i = 0, i1 = 4, i2 = 8)
                     wincondition(i = 2, i1 = 4, i2 = 6)
-
 
                 }
                 .weight(1f)
@@ -133,17 +149,21 @@ fun surface(rowScope: RowScope, i: Int) {
 
 @Preview
 @Composable
-fun DefaultPreview() {
+fun tictactoe() {
     Column(
         modifier = Modifier.fillMaxSize()
 
     ) {
         var cn = 0
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1.5f)
-        ) {}
+                .weight(1.5f), contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = star.value, fontSize = 60.sp, color = Color.White
+            )
+        }
         for (i in 1..3) {
             Row(
                 modifier = Modifier
@@ -151,23 +171,18 @@ fun DefaultPreview() {
                     .weight(1f)
             ) {
                 for (ii in 1..3) {
-                    surface(rowScope = this, cn)
+                    square(rowScope = this, cn)
                     cn++
                 }
-
             }
         }
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .weight(1.5f), contentAlignment = Alignment.Center
-
-        ) {
-            button("Restart" )
-
-            Text(
-                text = star.value, fontSize = 50.sp
-            )
-            }
+        )
+        {
+            button(text = "Restart")
         }
     }
+}
